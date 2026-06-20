@@ -1,38 +1,56 @@
 import express from "express";
+import { PrismaClient } from "@prisma/client";
 
 const app = express();
+const prisma = new PrismaClient();
 
 app.use(express.json()); //receiver
 
 
-// fake database (temporary memory)
-const users: any[] = [];
 
-
-
-/**
- * Create User
+/** 
+ * CREATE USER (DB)
  */
-app.post("/users", (req, res) => {
-  const user = req.body;
+app.post("/users", async (req, res) => {
+  try {
+    const user = req.body;
 
-  users.push(user);
+    const newUser = await prisma.user.create({
+      data: {
+        name: user.name,
+        email: user.email,
+      },
+    });
 
-  res.json({
-    message: "User created",
-    data: user
-  });
+    res.json({
+      message: "User created",
+      data: newUser,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Error creating user",
+      error: error.message,
+    });
+  }
 });
 
 
-
 /**
- * Get all users
+ * GET ALL USERS (DB)
  */
-app.get("/users", (req, res) => {
-  res.json({
-    data: users
-  });
+app.get("/users", async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+
+    res.json({
+      data: users,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Error fetching users",
+      error: error.message,
+    });
+  }
 });
 
 
