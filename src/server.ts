@@ -1,62 +1,40 @@
 import express from "express";
-import { PrismaClient } from "@prisma/client";
+import { createUser, getUsers } from "./services/user.service";
 
 const app = express();
-const prisma = new PrismaClient();
 
-app.use(express.json()); //receiver
-
+app.use(express.json());
 
 
-/** 
- * CREATE USER (DB)
- */
+
 app.post("/users", async (req, res) => {
   try {
-    const user = req.body;
+    const { name, email } = req.body;
 
-    const newUser = await prisma.user.create({
-      data: {
-        name: user.name,
-        email: user.email,
-      },
-    });
+    const user = await createUser(name, email);
 
     res.json({
       message: "User created",
-      data: newUser,
+      data: user,
     });
   } catch (error: any) {
-    res.status(500).json({
-      message: "Error creating user",
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 });
 
 
-/**
- * GET ALL USERS (DB)
- */
+
 app.get("/users", async (req, res) => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await getUsers();
 
-    res.json({
-      data: users,
-    });
+    res.json({ data: users });
   } catch (error: any) {
-    res.status(500).json({
-      message: "Error fetching users",
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 });
-
-
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
-
 
