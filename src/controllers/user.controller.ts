@@ -17,9 +17,9 @@ export const createUserController = async (
       });
     }
 
-    const { name, email } = result.data;
+    const { name, email, password } = result.data;
 
-    const user = await createUser(name, email);
+    const user = await createUser(name, email, password);
 
     res.json({
       message: "User created",
