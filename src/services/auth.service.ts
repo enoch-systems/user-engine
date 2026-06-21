@@ -24,7 +24,9 @@ export class AuthService {
       },
     });
 
-    return user;
+    const { password: _, ...safeUser } = user;
+
+    return safeUser;
   }
 
   static async login(email: string, password: string) {
@@ -50,6 +52,12 @@ export class AuthService {
 
     const { password: _, ...safeUser } = user;
 
-    return { user: safeUser, token };
+    return {
+      message: "Login successful",
+      data: {
+        user: safeUser,
+        token,
+      },
+    };
   }
 }
