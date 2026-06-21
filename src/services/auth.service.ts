@@ -29,6 +29,8 @@ export class AuthService {
     return safeUser;
   }
 
+
+  
   static async login(email: string, password: string) {
     const user = await prisma.user.findUnique({
       where: { email },
@@ -53,11 +55,8 @@ export class AuthService {
     const { password: _, ...safeUser } = user;
 
     return {
-      message: "Login successful",
-      data: {
-        user: safeUser,
-        token,
-      },
+      user: safeUser,
+      token,
     };
   }
 }
