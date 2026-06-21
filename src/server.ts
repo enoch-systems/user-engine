@@ -1,7 +1,8 @@
 import express from "express";
-import { 
+import {
   createUserController, getUsersController,
  } from "./controllers/user.controller";
+import authRoutes from "./routes/auth.routes";
 import { errorMiddleware } from "./middlewares/error.middleware";
 
 const app = express();
@@ -9,6 +10,8 @@ app.use(express.json());
 
 app.post("/users", createUserController)
 app.get("/users", getUsersController)
+
+app.use("/auth", authRoutes)
 
 app.use(errorMiddleware);
 
